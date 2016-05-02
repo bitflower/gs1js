@@ -45,11 +45,7 @@ export class GS1Reader {
     
     private extractIdentifiers() {
         
-        //if (this.hasidentifiers) {
-        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        //} else {
-            this.identifiers = gs1helpers.extractFixIds(this.code);
-        //}
+        this.identifiers = gs1helpers.extractIds(this.code);
         
     }
     

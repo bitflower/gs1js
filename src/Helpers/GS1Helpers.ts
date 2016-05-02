@@ -40,30 +40,7 @@ export function cleanStart(bytes) {
     
 }
 
-// Extract IDs of group separators
-export function extractGSIds(bytes:any[], gs:number[]):ApplicationIdentifier[] {
-    
-    var parts = splitBinAtGS(bytes, gs);
-    var ids: ApplicationIdentifier[] = [];
-
-    // Get first identifier on position 1
-    //ids[0] = helpers.bin2String(parts[0]);
-    //ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-
-    for (var i = 0; i < parts.length; i++) {
-        var part = parts[i];
-        var id = parseInt(String.fromCharCode(part[0]) + String.fromCharCode(part[1]));
-        //ids[id] = helpers.bin2String(part.slice(2));
-        
-        ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-        
-    }
-
-    return ids;
-
-}
-
-export function extractFixIds(code:string):ApplicationIdentifier[] {
+export function extractIds(code:string):ApplicationIdentifier[] {
     
     // Minimum length is 2
     if (code.length <= 1) {

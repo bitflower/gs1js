@@ -51,11 +51,7 @@ var GS1Reader = (function () {
         this.code = helpers.bin2String(this.bytes);
     };
     GS1Reader.prototype.extractIdentifiers = function () {
-        //if (this.hasidentifiers) {
-        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        //} else {
-        this.identifiers = gs1helpers.extractFixIds(this.code);
-        //}
+        this.identifiers = gs1helpers.extractIds(this.code);
     };
     GS1Reader.prototype.getApplicationIdentifiers = function () {
         return this.identifiers;
@@ -197,23 +193,7 @@ function cleanStart(bytes) {
     return bytes;
 }
 exports.cleanStart = cleanStart;
-// Extract IDs of group separators
-function extractGSIds(bytes, gs) {
-    var parts = splitBinAtGS(bytes, gs);
-    var ids = [];
-    // Get first identifier on position 1
-    //ids[0] = helpers.bin2String(parts[0]);
-    //ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-    for (var i = 0; i < parts.length; i++) {
-        var part = parts[i];
-        var id = parseInt(String.fromCharCode(part[0]) + String.fromCharCode(part[1]));
-        //ids[id] = helpers.bin2String(part.slice(2));
-        ids.push(new ApplicationIdentifier_1.default(id.toString(), helpers.bin2String(part.slice(2))));
-    }
-    return ids;
-}
-exports.extractGSIds = extractGSIds;
-function extractFixIds(code) {
+function extractIds(code) {
     // Minimum length is 2
     if (code.length <= 1) {
         return [];
@@ -265,7 +245,7 @@ function extractFixIds(code) {
                 // Push new AI to array            
                 ids.push(new ApplicationIdentifier_1.default(fixedLengthAI.ai, idValue));
                 // The AI parser will return the end position of its data
-                startPos += fixedLengthAI.length; //this.AIparsers[guessAI].call(this, codeWorking, startPos);
+                startPos += fixedLengthAI.length;
                 gap = 1;
             }
         }
@@ -285,7 +265,7 @@ function extractFixIds(code) {
     // Return the found AIs
     return ids;
 }
-exports.extractFixIds = extractFixIds;
+exports.extractIds = extractIds;
 
 },{"../ApplicationIdentifier":2,"./GS1Assets":4,"./Helpers":6}],6:[function(require,module,exports){
 "use strict";

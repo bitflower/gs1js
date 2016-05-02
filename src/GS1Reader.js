@@ -25,11 +25,7 @@ var GS1Reader = (function () {
         this.code = helpers.bin2String(this.bytes);
     };
     GS1Reader.prototype.extractIdentifiers = function () {
-        //if (this.hasidentifiers) {
-        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        //} else {
-        this.identifiers = gs1helpers.extractFixIds(this.code);
-        //}
+        this.identifiers = gs1helpers.extractIds(this.code);
     };
     GS1Reader.prototype.getApplicationIdentifiers = function () {
         return this.identifiers;

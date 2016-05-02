@@ -38,23 +38,7 @@ function cleanStart(bytes) {
     return bytes;
 }
 exports.cleanStart = cleanStart;
-// Extract IDs of group separators
-function extractGSIds(bytes, gs) {
-    var parts = splitBinAtGS(bytes, gs);
-    var ids = [];
-    // Get first identifier on position 1
-    //ids[0] = helpers.bin2String(parts[0]);
-    //ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-    for (var i = 0; i < parts.length; i++) {
-        var part = parts[i];
-        var id = parseInt(String.fromCharCode(part[0]) + String.fromCharCode(part[1]));
-        //ids[id] = helpers.bin2String(part.slice(2));
-        ids.push(new ApplicationIdentifier_1.default(id.toString(), helpers.bin2String(part.slice(2))));
-    }
-    return ids;
-}
-exports.extractGSIds = extractGSIds;
-function extractFixIds(code) {
+function extractIds(code) {
     // Minimum length is 2
     if (code.length <= 1) {
         return [];
@@ -126,5 +110,5 @@ function extractFixIds(code) {
     // Return the found AIs
     return ids;
 }
-exports.extractFixIds = extractFixIds;
+exports.extractIds = extractIds;
 //# sourceMappingURL=GS1Helpers.js.map
