@@ -17,11 +17,6 @@ var myReader = new gs1js.GS1Reader(code);
 console.log(myReader.getApplicationIdentifiers());
 ```
 
-
-## Motivation
-
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
-
 ## Installation
 
 ```
