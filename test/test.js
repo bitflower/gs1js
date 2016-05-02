@@ -3,6 +3,7 @@ var assert = require('assert');
 
 // Content requires
 var gs1reader = require('../dist/GS1Reader');
+var ai = require('../dist/ApplicationIdentifier');
 
 describe('GS1Reader', function () {
 
@@ -76,6 +77,9 @@ describe('GS1Reader', function () {
         var code = "01040530635429071315041510123TQS21L2TEW674CZWSP4VM";
         var myReader = new gs1reader.GS1Reader(code);
         var AIs = myReader.getApplicationIdentifiers();  
+        
+        // Compare object for case below
+        var myAI = new ai.default('21', 'L2TEW674CZWSP4VM');
               
         it('should return 4 AIs', function () {
             assert.equal(4, AIs.length);
@@ -83,22 +87,25 @@ describe('GS1Reader', function () {
         it('should return AI "01" at position 0 with value "04053063542907"', function () {
             assert.equal('01', AIs[0].identifier);
             assert.equal('04053063542907', AIs[0].value);
-
         });
         it('should return AI "13" at position 1 with value "150415"', function () {
             assert.equal('13', AIs[1].identifier);
             assert.equal('150415', AIs[1].value);
-
         });
         it('should return variable AI "10" at position 2 with value "123TQS"', function () {
             assert.equal('10', AIs[2].identifier);
             assert.equal('123TQS', AIs[2].value);
-
         });
         it('should return variable AI "21" at position 3 with value "L2TEW674CZWSP4VM"', function () {
             assert.equal('21', AIs[3].identifier);
             assert.equal('L2TEW674CZWSP4VM', AIs[3].value);
-
+        });
+        
+        it('should return the ApplicationIdentifier object of AI "21"', function () {
+            assert.deepEqual(myAI, myReader.getApplicationIdentifierById('21'));
+        });
+        it('should return null for an AI that does not exist', function () {
+            assert.equal(null, myReader.getApplicationIdentifierById('87'));
         });
         
     });

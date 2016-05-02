@@ -7,8 +7,8 @@ var GS1Reader = (function () {
         this.code = code;
         this.bytes = bytes;
         this.checkBytes();
-        this.identifierPositions = gs1helpers.getGroupSeparators(this.bytes);
-        this.hasidentifiers = (this.identifierPositions.length > 0);
+        this.hasidentifiers = false;
+        this.lookup = {};
         this.extractIdentifiers();
     }
     GS1Reader.prototype.checkBytes = function () {
@@ -20,9 +20,16 @@ var GS1Reader = (function () {
     };
     GS1Reader.prototype.extractIdentifiers = function () {
         this.identifiers = gs1helpers.extractIds(this.code);
+        this.hasidentifiers = this.identifiers.length > 0;
+        for (var i = 0, len = this.identifiers.length; i < len; i++) {
+            this.lookup[this.identifiers[i].identifier] = this.identifiers[i];
+        }
     };
     GS1Reader.prototype.getApplicationIdentifiers = function () {
         return this.identifiers;
+    };
+    GS1Reader.prototype.getApplicationIdentifierById = function (id) {
+        return this.lookup[id];
     };
     return GS1Reader;
 }());

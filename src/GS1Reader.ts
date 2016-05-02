@@ -8,7 +8,7 @@ export class GS1Reader {
     private bytes: any[];
     
     private hasidentifiers: boolean;
-    private identifierPositions: number[];
+    private lookup: any;
     
     private identifiers: ApplicationIdentifier[];
     
@@ -20,9 +20,10 @@ export class GS1Reader {
         this.checkBytes();
         
         // Read identifier positions if present
-        this.identifierPositions = gs1helpers.getGroupSeparators(this.bytes);
-        this.hasidentifiers = (this.identifierPositions.length > 0);
+        this.hasidentifiers = false;
+        this.lookup = {};
         
+        // Extract application identifiers
         this.extractIdentifiers();
          
     }
@@ -47,12 +48,23 @@ export class GS1Reader {
         
         this.identifiers = gs1helpers.extractIds(this.code);
         
+        // Set flag
+        this.hasidentifiers = this.identifiers.length > 0;
+        
+        // Fill lookup object
+        for (var i = 0, len = this.identifiers.length; i < len; i++) {
+            this.lookup[this.identifiers[i].identifier] = this.identifiers[i];
+        }        
     }
     
     public getApplicationIdentifiers(): ApplicationIdentifier[] {
-        
         return this.identifiers;
-        
     }
+    
+    public getApplicationIdentifierById(id:string): ApplicationIdentifier {
+        
+        return this.lookup[id];
+
+    }    
     
 }
