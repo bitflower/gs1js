@@ -1,6 +1,6 @@
 {
   "name": "gs1js",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "GS1JS is a Javascript GS1 barcode parser for NodeJS and the browser.",
   "main": "./dist/GS1Reader.js",
   "scripts": {
