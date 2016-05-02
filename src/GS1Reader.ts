@@ -1,5 +1,5 @@
-import * as helpers from './helpers';
-import * as gs1helpers from './gs1-helpers';
+import * as helpers from './Helpers/Helpers';
+import * as gs1helpers from './Helpers/GS1Helpers';
 import ApplicationIdentifier from './ApplicationIdentifier';
 
 export class GS1Reader {

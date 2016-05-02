@@ -13,4 +13,4 @@ function bin2String(array) {
     return String.fromCharCode.apply(String, array);
 }
 exports.bin2String = bin2String;
-//# sourceMappingURL=helpers.js.map
+//# sourceMappingURL=Helpers.js.map

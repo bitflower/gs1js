@@ -1,6 +1,6 @@
 "use strict";
-var helpers = require('./helpers');
-var gs1helpers = require('./gs1-helpers');
+var helpers = require('./Helpers/Helpers');
+var gs1helpers = require('./Helpers/GS1Helpers');
 var GS1Reader = (function () {
     function GS1Reader(code, bytes) {
         if (bytes === void 0) { bytes = []; }

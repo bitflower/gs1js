@@ -76,4 +76,4 @@ var GS1Assets = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = GS1Assets;
-//# sourceMappingURL=gs1-predefined-ais.js.map
+//# sourceMappingURL=GS1Assets.js.map

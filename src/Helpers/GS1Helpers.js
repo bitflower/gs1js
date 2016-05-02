@@ -1,9 +1,9 @@
-import * as helpers from './helpers';
-import GS1Assets from './gs1-predefined-ais';
-import ApplicationIdentifier from './ApplicationIdentifier';
-
+"use strict";
+var helpers = require('./Helpers');
+var GS1Assets_1 = require('./GS1Assets');
+var ApplicationIdentifier_1 = require('../ApplicationIdentifier');
 // Helper: Reads positions of group separator symbols (ascii 29)
-export function getGroupSeparators(ascii) {
+function getGroupSeparators(ascii) {
     var grp = [];
     for (var i = 0; i < ascii.length; i++) {
         if (ascii[i] === 29) {
@@ -12,76 +12,61 @@ export function getGroupSeparators(ascii) {
     }
     return grp;
 }
-
+exports.getGroupSeparators = getGroupSeparators;
 // Split array at group separators
-export function splitBinAtGS(bytes, gs) {
+function splitBinAtGS(bytes, gs) {
     var parts = [];
     var start = 0;
     for (var i = 0; i <= gs.length; i++) {
         if (i < gs.length) {
             parts.push(bytes.slice(start, gs[i]));
             start = gs[i] + 1;
-        } else {
+        }
+        else {
             parts.push(bytes.slice(start));
         }
     }
     return parts;
 }
+exports.splitBinAtGS = splitBinAtGS;
 // Extract IDs of group separators
-export function extractGSIds(bytes:any[], gs:number[]):ApplicationIdentifier[] {
-    
+function extractGSIds(bytes, gs) {
     var parts = splitBinAtGS(bytes, gs);
-    var ids: ApplicationIdentifier[] = [];
-
+    var ids = [];
     // Get first identifier on position 1
     //ids[0] = helpers.bin2String(parts[0]);
     //ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-
     for (var i = 0; i < parts.length; i++) {
         var part = parts[i];
         var id = parseInt(String.fromCharCode(part[0]) + String.fromCharCode(part[1]));
         //ids[id] = helpers.bin2String(part.slice(2));
-        
-        ids.push(new ApplicationIdentifier(id.toString(), helpers.bin2String(part.slice(2))));
-        
+        ids.push(new ApplicationIdentifier_1.default(id.toString(), helpers.bin2String(part.slice(2))));
     }
-
     return ids;
-
 }
-
-export function extractFixIds(code:string):ApplicationIdentifier[] {
-    
+exports.extractGSIds = extractGSIds;
+function extractFixIds(code) {
     // Minimum length is 2
     if (code.length <= 1) {
         return [];
     }
-    
-    var ids: ApplicationIdentifier[] = [];
-    
+    var ids = [];
     // Loop over all available, predefined, fixed length identifiers
-    for( var i=0, l=GS1Assets.FIXED_LENGTH_IDENTIFIERS.length; i<l; i++ ) {
-        
+    for (var i = 0, l = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS.length; i < l; i++) {
         if (code.length <= 1) {
             break;
         }
-        
         // Check if the first 2 chars match one of the predefined identifiers
-        if (code.substr(0, 2) === GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai) {
-    
+        if (code.substr(0, 2) === GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai) {
             // Cut off the 2 digits of the identifier from the code
             code = code.substring(2);
-            
             // Extract length of idenditifer from code
-            ids.push(new ApplicationIdentifier(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai, code.substring(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].length)));
-            
+            ids.push(new ApplicationIdentifier_1.default(GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai, code.substring(GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].length)));
             // Cut off code length from code snippet
-            code = code.substring(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].length);
-            
+            code = code.substring(GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].length);
         }
-        
     }
-    
     return ids;
-    
 }
+exports.extractFixIds = extractFixIds;
+//# sourceMappingURL=GS1Helpers.js.map
