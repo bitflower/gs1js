@@ -1,10 +1,10 @@
 {
   "name": "gs1js",
   "version": "1.0.0",
-  "description": "",
-  "main": "script.js",
+  "description": "GS1JS is a Javascript GS1 barcode parser for NodeJS and the browser.",
+  "main": "./dist/GS1Reader.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Matthias Max",
   "license": "MIT",
