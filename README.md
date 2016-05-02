@@ -4,7 +4,20 @@ GS1JS parses GS1 bar codes with fix-length and variable length application ident
 
 ## Usage
 
-In the browser:
+### In a node app
+
+```javascript
+// The code to read/parse
+var code = '0109120049640041171812311050532212KP1NDMXA2BP9P6C';
+
+// Call the constructor from the global scope
+var myReader = require('gs1js/GS1Reader');
+
+// Read the found AIs
+var AIs = myReader.getApplicationIdentifiers();
+```
+
+### In the browser:
 
 ```javascript
 // The code to read/parse
