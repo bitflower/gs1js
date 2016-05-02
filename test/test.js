@@ -2,7 +2,7 @@
 var assert = require('assert');
 
 // Content requires
-var gs1reader = require('../src/GS1Reader');
+var gs1reader = require('../dist/GS1Reader');
 
 describe('GS1Reader', function () {
 

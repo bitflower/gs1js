@@ -6,22 +6,16 @@ var GS1Reader = (function () {
         if (bytes === void 0) { bytes = []; }
         this.code = code;
         this.bytes = bytes;
-        // Extract bytes of not present
         this.checkBytes();
-        // Read identifier positions if present
         this.identifierPositions = gs1helpers.getGroupSeparators(this.bytes);
         this.hasidentifiers = (this.identifierPositions.length > 0);
         this.extractIdentifiers();
     }
     GS1Reader.prototype.checkBytes = function () {
-        // Is the bytes array filled?
         if (!this.bytes || this.bytes.length === 0) {
-            // If not, convert text into byte array
             this.bytes = helpers.getASCIIArray(this.code);
         }
-        // Clean up byte array
         this.bytes = gs1helpers.cleanStart(this.bytes);
-        // Recreate code from cleaned byte array
         this.code = helpers.bin2String(this.bytes);
     };
     GS1Reader.prototype.extractIdentifiers = function () {
@@ -33,4 +27,3 @@ var GS1Reader = (function () {
     return GS1Reader;
 }());
 exports.GS1Reader = GS1Reader;
-//# sourceMappingURL=GS1Reader.js.map

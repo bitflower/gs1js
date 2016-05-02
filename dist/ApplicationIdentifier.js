@@ -9,4 +9,3 @@ var ApplicationIdentifier = (function () {
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = ApplicationIdentifier;
-//# sourceMappingURL=ApplicationIdentifier.js.map

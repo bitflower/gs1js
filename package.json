@@ -9,6 +9,8 @@
   "author": "Matthias Max",
   "license": "MIT",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.0",
     "mocha": "^2.4.5"
   }
 }
