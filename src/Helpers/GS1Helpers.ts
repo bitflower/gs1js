@@ -57,26 +57,38 @@ export function extractFixIds(code:string):ApplicationIdentifier[] {
         return [];
     }
     
+    var codeWorking = code;
+    
     var ids: ApplicationIdentifier[] = [];
     
     // Loop over all available, predefined, fixed length identifiers
     for( var i=0, l=GS1Assets.FIXED_LENGTH_IDENTIFIERS.length; i<l; i++ ) {
         
-        if (code.length <= 1) {
+        if (codeWorking.length <= 1) {
             break;
         }
         
+        var id:string = GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai;
+        var len:number = GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].length;
+        var lenId:number = GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai.length;
+        
         // Check if the first 2 chars match one of the predefined identifiers
-        if (code.substr(0, 2) === GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai) {
+        if (codeWorking.substr(0, lenId) === id) {
     
             // Cut off the 2 digits of the identifier from the code
-            code = code.substring(2);
+            // codeWorking = codeWorking.substring(2);
             
             // Extract length of idenditifer from code
-            ids.push(new ApplicationIdentifier(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].ai, code.substring(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].length)));
+            var idValue:string = codeWorking.substring(lenId, len);
+            
+            // Push new AI to array            
+            ids.push(new ApplicationIdentifier(id, idValue));
             
             // Cut off code length from code snippet
-            code = code.substring(GS1Assets.FIXED_LENGTH_IDENTIFIERS[i].length);
+            codeWorking = codeWorking.substring(len);
+            
+            // Reset loop to restart with first AI of predefined AIs
+            i = 0;
             
         }
         
