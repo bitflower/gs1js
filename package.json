@@ -9,8 +9,12 @@
   "author": "Matthias Max",
   "license": "MIT",
   "devDependencies": {
+    "browserify": "^13.0.0",
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.13.0",
-    "mocha": "^2.4.5"
+    "gulp-uglify": "^1.5.3",
+    "mocha": "^2.4.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }
