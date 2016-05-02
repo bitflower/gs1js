@@ -128,6 +128,9 @@ export function extractIds(code:string):ApplicationIdentifier[] {
             var id:string = dynamicAI.substr(0, 2);
             var value:string = dynamicAI.substr(2);
             
+            // Trunc GS / ASCII 29
+            value = value.substr(0, value.length - 1);
+            
             // Push new AI to array            
             ids.push(new ApplicationIdentifier(id, value));
             

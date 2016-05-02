@@ -100,6 +100,8 @@ function extractIds(code) {
             // Extraxt ID
             var id = dynamicAI.substr(0, 2);
             var value = dynamicAI.substr(2);
+            // Trunc GS / ASCII 29
+            value = value.substr(0, value.length - 1);
             // Push new AI to array            
             ids.push(new ApplicationIdentifier_1.default(id, value));
             // Jump to spot after 
