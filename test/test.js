@@ -71,9 +71,9 @@ describe('GS1Reader', function () {
 describe('GS1Reader', function () {
 
     // GS1 data matrix code with mixed fixed-length and variable length AIs
-    describe('new(\"01040530635429071315041510123TQS<GS>21L2TEW674CZWSP4VM") mixed fix/var length', function () {
+    describe('new(\"<GS>01040530635429071315041510123TQS<GS>21L2TEW674CZWSP4VM") mixed fix/var length with leading GS', function () {
         
-        var code = "01040530635429071315041510123TQS21L2TEW674CZWSP4VM";
+        var code = "01040530635429071315041510123TQS21L2TEW674CZWSP4VM";
         var myReader = new gs1reader.GS1Reader(code);
         var AIs = myReader.getApplicationIdentifiers();  
               
