@@ -2,17 +2,6 @@ import * as helpers from './Helpers';
 import GS1Assets from './GS1Assets';
 import ApplicationIdentifier from '../ApplicationIdentifier';
 
-// Helper: Reads positions of group separator symbols (ascii 29)
-export function getGroupSeparators(ascii) {
-    var grp = [];
-    for (var i = 0; i < ascii.length; i++) {
-        if (ascii[i] === 29) {
-            grp.push(i);
-        }
-    }
-    return grp;
-}
-
 // Split array at group separators
 export function splitBinAtGS(bytes, gs) {
     var parts = [];

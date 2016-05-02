@@ -2,16 +2,6 @@
 var helpers = require('./Helpers');
 var GS1Assets_1 = require('./GS1Assets');
 var ApplicationIdentifier_1 = require('../ApplicationIdentifier');
-function getGroupSeparators(ascii) {
-    var grp = [];
-    for (var i = 0; i < ascii.length; i++) {
-        if (ascii[i] === 29) {
-            grp.push(i);
-        }
-    }
-    return grp;
-}
-exports.getGroupSeparators = getGroupSeparators;
 function splitBinAtGS(bytes, gs) {
     var parts = [];
     var start = 0;
