@@ -35,15 +35,21 @@ export class GS1Reader {
             this.bytes = helpers.getASCIIArray(this.code);
         }
         
+        // Clean up byte array
+        this.bytes = gs1helpers.cleanStart(this.bytes);
+        
+        // Recreate code from cleaned byte array
+        this.code = helpers.bin2String(this.bytes);
+        
     }
     
     private extractIdentifiers() {
         
-        if (this.hasidentifiers) {
-            this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        } else {
+        //if (this.hasidentifiers) {
+        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
+        //} else {
             this.identifiers = gs1helpers.extractFixIds(this.code);
-        }
+        //}
         
     }
     

@@ -1,10 +1,13 @@
+// Class with static methods and constants for GS1-related code operations
 "use strict";
-// GS1 table of pre-defined elements and their length
-// As defined in http://www.gs1.org/docs/barcodes/GS1_General_Specifications.pdf
-// Chapter 5.10.1
 var GS1Assets = (function () {
     function GS1Assets() {
     }
+    // GS1 table of pre-defined elements and their length
+    // As defined in http://www.gs1.org/docs/barcodes/GS1_General_Specifications.pdf
+    // The length INCLUDES the identifier
+    // Example identifier 01 has a data length of 14 => 16 total length
+    // Chapter 5.10.1
     GS1Assets.FIXED_LENGTH_IDENTIFIERS = [{
             ai: '00',
             length: 20
@@ -72,6 +75,15 @@ var GS1Assets = (function () {
             ai: '41',
             length: 16
         }];
+    GS1Assets.getFixedLengthIdentifier = function (ai) {
+        for (var i = 0, l = this.FIXED_LENGTH_IDENTIFIERS.length; i < l; i++) {
+            if (this.FIXED_LENGTH_IDENTIFIERS[i].ai === ai) {
+                return this.FIXED_LENGTH_IDENTIFIERS[i];
+            }
+        }
+        // If the identifier does not exists return null
+        return null;
+    };
     return GS1Assets;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });

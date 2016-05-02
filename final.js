@@ -1,7 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var cr = require('./src/GS1Reader');
 
-var code = '010405306372385621U16Y1PWM84SK7VSC';
+// Without GS
+// var code = '010405306372385621U16Y1PWM84SK7VSC';
+
+// With GS
+var code = '0109120049640041171812311050532212KP1NDMXA2BP9P6C';
 
 var myReader = new cr.GS1Reader(code);
 
@@ -41,14 +45,17 @@ var GS1Reader = (function () {
             // If not, convert text into byte array
             this.bytes = helpers.getASCIIArray(this.code);
         }
+        // Clean up byte array
+        this.bytes = gs1helpers.cleanStart(this.bytes);
+        // Recreate code from cleaned byte array
+        this.code = helpers.bin2String(this.bytes);
     };
     GS1Reader.prototype.extractIdentifiers = function () {
-        if (this.hasidentifiers) {
-            this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        }
-        else {
-            this.identifiers = gs1helpers.extractFixIds(this.code);
-        }
+        //if (this.hasidentifiers) {
+        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
+        //} else {
+        this.identifiers = gs1helpers.extractFixIds(this.code);
+        //}
     };
     GS1Reader.prototype.getApplicationIdentifiers = function () {
         return this.identifiers;
@@ -169,6 +176,15 @@ function splitBinAtGS(bytes, gs) {
     return parts;
 }
 exports.splitBinAtGS = splitBinAtGS;
+// Remove faulty first GS (ASCII 29) from code
+// Some scanner deliver the Code 232 as GS / ASCII 29
+function cleanStart(bytes) {
+    if (bytes && bytes.length > 0 && bytes[0] == 29) {
+        bytes.shift();
+    }
+    return bytes;
+}
+exports.cleanStart = cleanStart;
 // Extract IDs of group separators
 function extractGSIds(bytes, gs) {
     var parts = splitBinAtGS(bytes, gs);
@@ -191,30 +207,39 @@ function extractFixIds(code) {
         return [];
     }
     var codeWorking = code;
+    // Array to hold the found AIs
     var ids = [];
     // Loop over all available, predefined, fixed length identifiers
     for (var i = 0, l = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS.length; i < l; i++) {
         if (codeWorking.length <= 1) {
             break;
         }
+        // Put AI info into local vars for better readability
         var id = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai;
         var len = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].length;
         var lenId = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai.length;
-        // Check if the first 2 chars match one of the predefined identifiers
+        // Check if the first n (length of identifier key 0 usually 2) chars match one of the predefined identifiers
         if (codeWorking.substr(0, lenId) === id) {
-            // Cut off the 2 digits of the identifier from the code
-            // codeWorking = codeWorking.substring(2);
             // Extract length of idenditifer from code
             var idValue = codeWorking.substring(lenId, len);
-            // Cut off the 2 digits of the identifier from the code
-            // codeWorking = codeWorking.substring(lenId);
+            // Read one more byte for the GS / ASCII 29 check
+            // In other words: does this AI end with a GS?
+            var endGS = codeWorking.substr(len, 1);
+            var hasGS = false;
+            if (endGS) {
+                // Check if value ends with group separator (GS, ASCII 29)
+                var binArray = helpers.getASCIIArray(endGS);
+                var hasGS = binArray[binArray.length - 1] == 29;
+            }
+            // Push new AI to array            
             ids.push(new ApplicationIdentifier_1.default(id, idValue));
             // Cut off code length from code snippet
             codeWorking = codeWorking.substring(len);
-            // Reset loop
+            // Reset loop to restart with first AI of predefined AIs
             i = 0;
         }
     }
+    // Return the found AIs
     return ids;
 }
 exports.extractFixIds = extractFixIds;

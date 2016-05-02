@@ -19,14 +19,17 @@ var GS1Reader = (function () {
             // If not, convert text into byte array
             this.bytes = helpers.getASCIIArray(this.code);
         }
+        // Clean up byte array
+        this.bytes = gs1helpers.cleanStart(this.bytes);
+        // Recreate code from cleaned byte array
+        this.code = helpers.bin2String(this.bytes);
     };
     GS1Reader.prototype.extractIdentifiers = function () {
-        if (this.hasidentifiers) {
-            this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
-        }
-        else {
-            this.identifiers = gs1helpers.extractFixIds(this.code);
-        }
+        //if (this.hasidentifiers) {
+        //    this.identifiers = gs1helpers.extractGSIds(this.bytes, this.identifierPositions);
+        //} else {
+        this.identifiers = gs1helpers.extractFixIds(this.code);
+        //}
     };
     GS1Reader.prototype.getApplicationIdentifiers = function () {
         return this.identifiers;
