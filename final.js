@@ -2,10 +2,10 @@
 var cr = require('./src/GS1Reader');
 
 // Without GS
-// var code = '010405306372385621U16Y1PWM84SK7VSC';
+var code = '010405306372385621U16Y1PWM84SK7VSC';
 
 // With GS
-var code = '0109120049640041171812311050532212KP1NDMXA2BP9P6C';
+//var code = '0109120049640041171812311050532212KP1NDMXA2BP9P6C';
 
 var myReader = new cr.GS1Reader(code);
 
@@ -65,13 +65,16 @@ var GS1Reader = (function () {
 exports.GS1Reader = GS1Reader;
 
 },{"./Helpers/GS1Helpers":5,"./Helpers/Helpers":6}],4:[function(require,module,exports){
+// Class with static methods and constants for GS1-related code operations
 "use strict";
-// GS1 table of pre-defined elements and their length
-// As defined in http://www.gs1.org/docs/barcodes/GS1_General_Specifications.pdf
-// Chapter 5.10.1
 var GS1Assets = (function () {
     function GS1Assets() {
     }
+    // GS1 table of pre-defined elements and their length
+    // As defined in http://www.gs1.org/docs/barcodes/GS1_General_Specifications.pdf
+    // The length INCLUDES the identifier
+    // Example identifier 01 has a data length of 14 => 16 total length
+    // Chapter 5.10.1
     GS1Assets.FIXED_LENGTH_IDENTIFIERS = [{
             ai: '00',
             length: 20
@@ -139,6 +142,15 @@ var GS1Assets = (function () {
             ai: '41',
             length: 16
         }];
+    GS1Assets.getFixedLengthIdentifier = function (ai) {
+        for (var i = 0, l = this.FIXED_LENGTH_IDENTIFIERS.length; i < l; i++) {
+            if (this.FIXED_LENGTH_IDENTIFIERS[i].ai === ai) {
+                return this.FIXED_LENGTH_IDENTIFIERS[i];
+            }
+        }
+        // If the identifier does not exists return null
+        return null;
+    };
     return GS1Assets;
 }());
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -206,37 +218,68 @@ function extractFixIds(code) {
     if (code.length <= 1) {
         return [];
     }
+    // Clone code content to work with
     var codeWorking = code;
     // Array to hold the found AIs
     var ids = [];
-    // Loop over all available, predefined, fixed length identifiers
-    for (var i = 0, l = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS.length; i < l; i++) {
-        if (codeWorking.length <= 1) {
+    // Loop through code - char by char
+    // Parts of the code are borrowed from BarkJS
+    // https://github.com/Sleavely/Bark-JS/blob/master/lib/bark.js
+    var gap = 1;
+    var startPos = 0;
+    // debugger;
+    while (startPos < codeWorking.length) {
+        // Notbremse
+        if (gap > 300) {
             break;
         }
-        // Put AI info into local vars for better readability
-        var id = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai;
-        var len = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].length;
-        var lenId = GS1Assets_1.default.FIXED_LENGTH_IDENTIFIERS[i].ai.length;
-        // Check if the first n (length of identifier key 0 usually 2) chars match one of the predefined identifiers
-        if (codeWorking.substr(0, lenId) === id) {
-            // Extract length of idenditifer from code
-            var idValue = codeWorking.substring(lenId, len);
-            // Read one more byte for the GS / ASCII 29 check
-            // In other words: does this AI end with a GS?
-            var endGS = codeWorking.substr(len, 1);
-            var hasGS = false;
-            if (endGS) {
-                // Check if value ends with group separator (GS, ASCII 29)
-                var binArray = helpers.getASCIIArray(endGS);
-                var hasGS = binArray[binArray.length - 1] == 29;
+        var guessAI = codeWorking.substr(startPos, gap);
+        // At the end of an AI value: check if there is a GS / ASCII 29 char
+        // which indicates the beginning of a dynamic length AI
+        var binArray = helpers.getASCIIArray(guessAI);
+        var isGS = binArray[binArray.length - 1] == 29;
+        if (!isGS) {
+            // Check if there exists an fixed-length AI for this guess
+            var fixedLengthAI = GS1Assets_1.default.getFixedLengthIdentifier(guessAI);
+            // Every time we cant guess the next AI we make the gap just a little bigger.
+            // Otherwise jump.        
+            if (!fixedLengthAI) {
+                // End reached / last AI
+                if (startPos + gap >= codeWorking.length) {
+                    // Read dynamic length AI
+                    var dynamicAI = codeWorking.substr(startPos, gap);
+                    // Extraxt ID
+                    var id = dynamicAI.substr(0, 2);
+                    var value = dynamicAI.substr(2);
+                    // Push new AI to array            
+                    ids.push(new ApplicationIdentifier_1.default(id, value));
+                    break;
+                }
+                // I.e. if we just tried to find a method for "0" in the string "015730033004934115160817", try "01" next time
+                gap++;
             }
+            else {
+                var lenId = fixedLengthAI.ai.length;
+                // Extract value
+                var idValue = codeWorking.substr(startPos + lenId, fixedLengthAI.length - lenId);
+                // Push new AI to array            
+                ids.push(new ApplicationIdentifier_1.default(fixedLengthAI.ai, idValue));
+                // The AI parser will return the end position of its data
+                startPos += fixedLengthAI.length; //this.AIparsers[guessAI].call(this, codeWorking, startPos);
+                gap = 1;
+            }
+        }
+        else {
+            // Read dynamic length AI
+            var dynamicAI = codeWorking.substr(startPos, gap);
+            // Extraxt ID
+            var id = dynamicAI.substr(0, 2);
+            var value = dynamicAI.substr(2);
             // Push new AI to array            
-            ids.push(new ApplicationIdentifier_1.default(id, idValue));
-            // Cut off code length from code snippet
-            codeWorking = codeWorking.substring(len);
-            // Reset loop to restart with first AI of predefined AIs
-            i = 0;
+            ids.push(new ApplicationIdentifier_1.default(id, value));
+            // Jump to spot after 
+            startPos += gap;
+            gap = 1;
         }
     }
     // Return the found AIs
