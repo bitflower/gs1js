@@ -1,6 +1,21 @@
 ## Intro
 
-GS1JS parses GS1 bar codes with fix-length and variable length application identifiers (AI).
+GS1JS parses GS1 bar codes with fix-length and variable length application identifiers (AI). It recognizes code content of mixed nature meaning it can read codes that contain fixed-length AND variable length identifiers.
+
+It does not check for the symbology identifier at this point but instead parses only codes of type ]d2 which corresponds to data matrix.
+
+It reads these fixed-length AIs defined in the official doc:
+http://www.gs1.org/docs/barcodes/GS1_DataMatrix_Guideline.pdf
+Table 2-2 "Element Strings with Pre-Defined Length Using Application Identifiers (GS1 General Specifications
+Figure 5.10.1-2)"
+
+The parsing process was highly inspired by the given chart in the doc:
+http://www.gs1.org/docs/barcodes/GS1_DataMatrix_Guideline.pdf
+Figure 2-1 "Processing of Data from a scanned GS1 DataMatrix Symbol"
+
+More on the symbology identifier here:
+http://www.gs1.org/docs/barcodes/GS1_General_Specifications.pdf
+Figure 5.1.2-2. "ISO/IEC 15424 symbology identifiers used in the GS1 system"
 
 ## Usage
 
